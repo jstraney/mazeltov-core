@@ -1,6 +1,6 @@
 {
   "name": "@mazeltov/core",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Base controllers, services, model libraries",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,7 @@
     "change-case": "^4.1.2",
     "command-line-args": "^5.2.0",
     "command-line-usage": "^6.1.1",
+    "dotenv": "^14.2.0",
     "express": "^4.17.1",
     "fast-json-stringify": "^3.0.2",
     "ioredis": "^4.28.3",
@@ -33,7 +34,6 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "dotenv": "^10.0.0",
     "knex": "^0.95.15",
     "less-watch-compiler": "^1.16.3"
   }
