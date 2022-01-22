@@ -136,7 +136,10 @@ module.exports = ( ctx ) => {
     console.log(cliUsage([
       {
         header: 'Mazeltov - cli command help',
-        content: 'Here are some commands you can run',
+        content: [
+          'Here are some commands you can run. Running the command',
+          'with the --help flag will provide extended description and options',
+        ].join(' '),
       },
       {
         header: 'Commands',
@@ -144,8 +147,12 @@ module.exports = ( ctx ) => {
 
           const cmdInfo = commands[name] || {};
 
-          return cmdInfo.description
-            ? `${chalk.green(name)}: ${cmdInfo.description}`
+          const description = cmdInfo.description
+            ? cmdInfo.description.slice(0, 50) + '...'
+            : null;
+
+          return description
+            ? `${chalk.green(name)}: ${description}`
             : `${chalk.green(name)}`;
 
         }),

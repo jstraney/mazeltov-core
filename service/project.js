@@ -23,8 +23,6 @@ module.exports = ( ctx = {} ) => {
 
   const logger = loggerLib('@mazeltov/cli/service/project');
 
-  const gitURL = 'git@github.com:jstraney/mazeltov-project.git';
-
   const isInProjectDir = (dir) => {
     const pkgPath = path.resolve(dir, 'package.json')
     if (!fs.existsSync(pkgPath)) {
@@ -244,16 +242,23 @@ module.exports = ( ctx = {} ) => {
       name,
       pathPrefix = '.',
       skipPrompt = false,
+      branch = null,
     } = args;
 
     const rootDir = path.join(pathPrefix, name);
 
     logger.info('Cloning skeleton repo for @mazeltov/project');
 
+    const gitURL = 'git@github.com:jstraney/mazeltov-project.git';
+
     logger.debug(`git clone ${gitURL} ${rootDir}`);
 
-    // clone project directory at 'path' + 'name'
-    execSync(`git clone ${gitURL} ${rootDir}`, { stdio: 'pipe'});
+    if (branch) {
+      execSync(`git clone -b ${branch} --single-branch ${gitURL} ${rootDir}`, { stdio: 'pipe'});
+    } else {
+      // just clone from master
+      execSync(`git clone ${gitURL} ${rootDir}`, { stdio: 'pipe'});
+    }
 
     await setup({
       path: rootDir,
