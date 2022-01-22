@@ -3,6 +3,9 @@
   "version": "2.0.2",
   "description": "Base controllers, services, model libraries",
   "main": "index.js",
+  "bin": {
+    "mazeltov": "./bin/index.js"
+  },
   "scripts": {
     "watch-less": "./node_modules/.bin/less-watch-compiler src/less ./asset main.less",
     "build-less": "./node_modules/.bin/less-watch-compiler --run-once src/less ./asset main.less",
