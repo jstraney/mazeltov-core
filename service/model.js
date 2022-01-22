@@ -197,6 +197,13 @@ module.exports = async ( ctx = {} ) => {
   };
 
   const _getEntityInfo = async () => {
+
+    // if there is no core schema, or no user schemas, we
+    // cannot use models.
+    if (!allSchemas.length || !allSchemas.includes('mazeltov')) {
+      return {};
+    }
+
     const [
       entities,
       columns,

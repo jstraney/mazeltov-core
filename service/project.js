@@ -128,9 +128,17 @@ module.exports = ( ctx = {} ) => {
           description: 'Database Password',
           default: randStr(32),
         },
+        databaseHost: {
+          description: 'Database Host',
+          default: '127.0.0.1',
+        },
         redisPassword: {
           description: 'Redis Password',
           default: randStr(32),
+        },
+        redisHost: {
+          description: 'Redis Host',
+          default: '127.0.0.1',
         },
       },
     });
@@ -144,8 +152,10 @@ module.exports = ( ctx = {} ) => {
       hostname,
       databaseName,
       databaseUser,
+      databaseHost,
       databasePassword,
-      redisPassword
+      redisPassword,
+      redisHost,
     } = promptValues;
 
     // Walk through prompt and update the buffer
@@ -165,7 +175,10 @@ module.exports = ( ctx = {} ) => {
       APP_DB_DEBUG: false,
       APP_DB_PASSWORD: databasePassword,
       APP_DB_USER: databaseUser,
+      APP_DB_HOST: databaseHost,
+      APP_REDIS_HOSTNAME: redisHost,
       APP_REDIS_PASSWORD: redisPassword,
+      APP_PORT: 443,
     };
 
     let newEnv = fs.readFileSync(`${rootDir}/example.env`, { encoding: 'utf8' });

@@ -47,11 +47,21 @@ module.exports = async ( ctx ) => {
 
   if (dbService) {
 
-    const modules = getEnabledModules();
+    // can throw error if installing mazeltov for first time
+    // (no core tables). catch this and return empty db settings
+    const modules = await getEnabledModules()
+      .catch((error) => {
+        return null;
+      });
 
-    settingRecords = await dbService('setting')
-      .withSchema('mazeltov')
-      .whereIn('moduleName', Object.keys(modules));
+    if (modules === null) {
+      settingRecords = [];
+    } else {
+      settingRecords = await dbService('setting')
+        .withSchema('mazeltov')
+        .whereIn('moduleName', Object.keys(modules));
+    }
+
   } else {
     settingRecords = [];
   }

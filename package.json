@@ -39,5 +39,6 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "knex": "^0.95.15",
     "less-watch-compiler": "^1.16.3"
-  }
+  },
+  "generatedWith": "mazeltov"
 }

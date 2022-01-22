@@ -311,7 +311,9 @@ exports.up = async function(trx) {
         description: 'Password for redis',
         value: null,
       },
-    ]);
+    ])
+    .onConflict(['name', 'moduleName'])
+    .ignore();
 
 };
 

@@ -142,6 +142,7 @@ module.exports = ( ctx = {} ) => {
 
     if (!couldBeRun.length) {
       logger.info('Nothing to run')
+      await trx.rollback();
       return;
     }
 

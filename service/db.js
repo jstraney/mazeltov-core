@@ -13,12 +13,14 @@ module.exports = async ( ctx ) => {
         onHook,
       },
     },
+    loggerLib,
   } = ctx;
+
+  const logger = loggerLib('@mazeltov/core/service/db');
 
   if (!inProject) {
     return null;
   }
-
   // These are only available in the .env file for now
   // It'd be cool to be able to set this in DB itself but is
   // a clear circular dependency (cannot use settingService to
@@ -43,6 +45,12 @@ module.exports = async ( ctx ) => {
   // prevent hang on cli commands
   onHook('appHangup', () => {
     db.destroy();
+  });
+
+  await db.raw('SELECT 1').catch((error) => {
+    logger.debug('%o', error);
+    logger.info('No database found');
+    db = null;
   });
 
   return db;
