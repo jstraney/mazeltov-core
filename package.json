@@ -1,0 +1,38 @@
+{
+  "name": "@mazeltov/core",
+  "version": "2.0.0",
+  "description": "Base controllers, services, model libraries",
+  "main": "index.js",
+  "scripts": {
+    "watch-less": "./node_modules/.bin/less-watch-compiler src/less ./asset main.less",
+    "build-less": "./node_modules/.bin/less-watch-compiler --run-once src/less ./asset main.less",
+    "make-migration": "./node_modules/.bin/knex migrate:make --migrations-directory migrate"
+  },
+  "author": "Jeff Straney",
+  "license": "MIT",
+  "dependencies": {
+    "@mazeltov/logger": "^1.0.2",
+    "chalk": "^4.1.2",
+    "change-case": "^4.1.2",
+    "command-line-args": "^5.2.0",
+    "command-line-usage": "^6.1.1",
+    "express": "^4.17.1",
+    "ioredis": "^4.28.3",
+    "jsonpath-plus": "^6.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "luxon": "^2.2.0",
+    "node-forge": "^0.10.0",
+    "object-hash": "^2.2.0",
+    "pbkdf2": "^3.1.2",
+    "pg": "^8.7.1",
+    "pluralize": "^8.0.0",
+    "prompt": "^1.2.1",
+    "uglify-js": "^3.14.5"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "dotenv": "^10.0.0",
+    "knex": "^0.95.15",
+    "less-watch-compiler": "^1.16.3"
+  }
+}

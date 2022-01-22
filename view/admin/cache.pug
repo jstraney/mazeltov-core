@@ -1,0 +1,37 @@
+extends /layout/page.pug
+
+block content
+
+  div.ui-frame.med-width
+
+    h1 Manage Cache
+
+    +menu('cache', null, { inline: true }).primary
+
+    -const { cachePrefixes = [] } = result;
+
+    +form('Purge Cache')(method='post' action='/admin/cache/purge')
+
+      label.required Cache
+
+      +select(
+        '_noop',
+        [
+          ['_noop', 'Select Cache'],
+          ...cachePrefixes.map((prefix) => [prefix, prefix]),
+          ['_none', 'All Caches'],
+        ]
+      )(
+        name='cachePrefix'
+        id='cachePrefix'
+      )
+
+      p.form-prompt.
+        Select a cache to purge. When a cache is purged, the database
+        is queried directly for the newest results.
+
+      div.actions
+        input(
+          type='submit'
+          value='Purge Cache'
+        )

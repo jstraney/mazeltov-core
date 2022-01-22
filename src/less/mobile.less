@@ -1,0 +1,95 @@
+@media only screen and (max-width: @mobile-width ) {
+
+  .row {
+    display: block;
+  }
+
+  .row > .col + .col {
+    margin-top: 2rem;
+  }
+
+  .row.spaced > .col + .col {
+    margin-left: 0;
+    margin-top: 2rem;
+  }
+
+  .row.spaced > .col.full,
+  .row.spaced > .col.three-quarter,
+  .row.spaced > .col.two-third,
+  .row.spaced > .col.half,
+  .row.spaced > .col.third,
+  .row.spaced > .col.quarter,
+  .col.full,
+  .col.three-quarter,
+  .col.two-third,
+  .col.half,
+  .col.third,
+  .col.quarter {
+    max-width: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+
+  header {
+    display: block;
+  }
+
+  header a.logo {
+    float: none;
+    display: block;
+    margin: 1em auto;
+    max-width: 200px;
+  }
+
+  header nav {
+    max-width: 100%;
+  }
+
+  body {
+    padding-bottom: 0;
+  }
+
+  footer {
+    position: static;
+    height: auto;
+  }
+
+  .col.small-quarter {
+    max-width: 25%;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  legend {
+    left: 1em;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-align: center;
+  }
+
+  input[type=text],
+  input[type=email],
+  input[type=password],
+  input[type=number],
+  input[type=tel],
+  input[type=date],
+  select,
+  textarea,
+  button,
+  input[type=submit],
+  .button
+  {
+    width: 100%;
+  }
+
+  .inline.actions button,
+  .inline.actions input[type=submit],
+  .inline.actions .button
+  {
+    margin-top: 2rem;
+  }
+
+}

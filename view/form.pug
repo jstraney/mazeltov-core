@@ -1,0 +1,118 @@
+//- Form mixins
+
+//- adds a CSRF token into form
+//- Do not have to add manually if using +form mixin
+mixin csrf
+  input(
+    name='csrfToken'
+    type='hidden'
+    value=csrfToken
+  )
+
+//- adds hidden redirect field in form
+mixin _redirect(redirect = null)
+  input(
+    name='_redirect'
+    type='hidden'
+    value=(redirect || request.query._redirect || request.back)
+  )
+
+//- Creates an input that retains form values and highlights when field has errors
+mixin input()
+  - const { name = '', type = 'text', class: _class = '', id = name} = attributes;
+  - const attrOverrides = { class: [_class], id };
+  if error && error.lookup && error.lookup[name]
+    - attrOverrides.class.push('error');
+  - attrOverrides.class = attrOverrides.class.join(' ');
+  - lastSubmission = lastSubmission || {};
+  - const hasOldVal = util.collection.hasKey(lastSubmission, name)
+  if !['password', 'hidden'].includes(type) && hasOldVal
+    - attrOverrides.value = lastSubmission[name];
+  else if ['checkbox', 'radio'].includes(type) && hasOldVal
+    - attrOverrides.checked = lastSubmission[name] === attributes.value;
+  input()&attributes(attributes)&attributes(attrOverrides)
+
+//- Will provide bulleted list of form errors if passed to template
+//- Only first error for each unique field is produced
+mixin form-errors
+  if error
+    div.form-prompt.error-color
+
+      div=error.message
+
+      if error.list && error.list.constructor === Array
+
+        - const shown = {}
+
+        ul.form-prompt
+
+          each listError in error.list
+
+            if !shown[listError.key]
+
+              li=listError.message
+
+            - shown[listError.key] = true;
+
+mixin textarea()
+  - const { name = '', class: _class = '', id = name} = attributes;
+  - const attrOverrides = { class: [_class], id };
+  if error && error.lookup && error.lookup[name]
+    - attrOverrides.class.push('error');
+  - attrOverrides.class = attrOverrides.class.join(' ');
+  if util.collection.hasKey(lastSubmission, name)
+    - value = lastSubmission[name];
+  if value
+    textarea()&attributes(attributes)&attributes(attrOverrides)=value
+  else if block
+    textarea()&attributes(attributes)&attributes(attrOverrides)
+      block
+  else
+    textarea()&attributes(attributes)&attributes(attrOverrides)
+
+mixin select(valueSelected, options)
+  - const { name = '', class: _class = '', id = name } = attributes;
+  - const attrOverrides = { class: [_class], id };
+  if error && error.lookup && error.lookup[name]
+    - attrOverrides.class.push('error');
+
+  - attrOverrides.class = attrOverrides.class.join(' ');
+  if util.collection.hasKey(lastSubmission, name)
+    - valueSelected = lastSubmission[name];
+
+  select(name=id id=id)&attributes(attributes)&attributes(attrOverrides)
+    each [value, label] of options
+      option(
+        value=value
+        selected=(valueSelected === value)
+      )=label
+
+//- Creates form with title, csrf, redirect and more. Just use like a normal form element
+mixin form(formTitle = '', redirect = null)
+  - const { action = request.uri, method = 'get' } = attributes;
+  - const attrOverrides = { action, method };
+  form()&attributes(attributes)&attributes(attrOverrides)
+
+    if (formTitle)
+      h1=formTitle
+
+    +form-errors
+
+    //- embed the csrf token and redirect for stateful actions
+    if method != 'get'
+      +csrf
+      +_redirect(redirect)
+
+    if block
+      block
+
+mixin telephone-ccs(defaultValue)
+  +select(
+    defaultValue,
+    [
+      ['_noop', 'Select a Code'],
+      ...util.data.countryCodes.map((record) => {
+        return [record.isoCode, `${record.name} (${record.dialCode})`]
+      })
+    ]
+  )&attributes(attributes)

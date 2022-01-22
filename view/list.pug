@@ -1,0 +1,117 @@
+// Will retain the current query string but
+// replace a certain value. If you want to replace the
+// query string entirely, use a regular anchor tag
+mixin form-link(params = {}, url = request.uri)
+  - const nextParams = { ...(request.query || {})};
+  for val, key in params
+    if util.type.isArray(val)
+      -nextParams[`${key}[]`] = val
+    else
+      -nextParams[key] = val
+  for val, key in nextParams
+    if util.type.isArray(val)
+      -delete nextParams[key]
+  - const query = new URLSearchParams(nextParams).toString();
+  a(href=`${url}?${query}`)&attributes(attributes)
+    block
+
+//- List result mixins for paginated, table based results
+mixin pagination(listResult = null, path = request.uri)
+  if !listResult || !listResult.result
+    - listResult = { result: [] }
+  -const result = listResult.result || []
+
+  if listResult.total > listResult.result.length
+
+    - const {total = 1, totalPages = 1, currentPage = 1, limit = 10} = listResult;
+    p.form-prompt.result-summary.
+      Showing #{result.length} of #{total} Results - Page #{currentPage} of #{totalPages}
+
+    div.pagination
+      if listResult.firstPage !== null
+        +form-link({ page: listResult.firstPage })(title='First page') First
+
+      if listResult.prevPage !== null
+        +form-link({ page: listResult.prevPage })(title='Previous page') Prev
+
+      if listResult.localPages.length > 2
+        each page of listResult.localPages
+          if page == listResult.currentPage
+            +form-link({ page })(title=`Page ${page}`).active=page
+          else
+            +form-link({ page })(title=`Page ${page}`)=page
+
+      if listResult.nextPage !== null
+        +form-link({ page: listResult.nextPage })(title='Next page') Next
+
+      if listResult.lastPage !== null
+        +form-link({ page: listResult.lastPage })(title='Last page') Last
+
+mixin toggle-sort(name)
+  -const [ orderBy ] = request.query.orderBy || [];
+  -const [ orderDir ] = request.query.orderDir || [];
+  if orderBy === name && orderDir === 'asc'
+    +form-link({ 'orderBy[]': name, 'orderDir[]': 'desc' })
+      i.fas.fa-sort-amount-down.icon.after
+  else
+    +form-link({ 'orderBy[]': name, 'orderDir[]': 'asc'})
+      i.fas.fa-sort-amount-up.icon.after
+
+mixin result-table(listResult, columns = [], ops = [])
+
+  if listResult && listResult.result && listResult.result.length
+    +pagination(listResult)
+
+    div.table-wrapper
+      table.banded
+        thead
+          tr
+            each tuple of columns
+              -const [ name, label = name, opts = {}] = tuple
+              -const { ordered = false } = opts;
+              -const { selectAll = false } = opts;
+              th
+                if selectAll
+                  input(
+                    type='checkbox'
+                  ).select-all
+                span=label
+                if ordered
+                  +toggle-sort(name)
+            if ops.length
+              th
+        tbody
+          each row, index in (listResult.result || [])
+            tr
+              each tuple in columns
+                -const [ name, label = name, opts = {}] = tuple
+                -const { fmt = null, mixin = null, menu = null, emptyVal = '-'} = opts;
+                if fmt !== null
+                  td=(row[name] !== undefined ? fmt(row[name]) : emptyVal)
+                else if mixin !== null
+                  td
+                    +#{mixin}(row, index)
+                else if menu !== null
+                  td
+                    +menu(menu, null, { resource: row, inline: true })
+                else
+                  td=(row[name] !== undefined ? row[name] : emptyVal)
+              if ops.length
+                td.inline.actions
+                  -navLinks = []
+                  each tuple of ops
+                    - let [uri, label, acls = [], redirect = request.uri] = tuple
+                    - uri = util.string.fmtVariables(uri, row)
+                    - parts = uri.split('?');
+                    - uri = parts.length < 2 ? `${uri}?_redirect=${redirect}` : `${parts[0]}?${parts[1]}&_redirect=${redirect}`
+                    - navLinks.push([uri, label]);
+                  +nav-links(navLinks, true)
+
+    +pagination(listResult)
+
+  else
+    h2 No Results
+
+    p.
+      Your search has returned no results. There may be nothing
+      to see here or you may need to refine your search to see results.

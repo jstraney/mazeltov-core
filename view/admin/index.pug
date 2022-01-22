@@ -1,0 +1,18 @@
+extends /layout/page
+
+block content
+
+  div.ui-frame.large-width
+
+    h1 Administration
+
+    +menu('accountPrimary', [
+      'get:account',
+      'adminPage',
+    ], {
+      inline: true,
+    }).primary
+
+    div.row.spaced
+
+      +menu('admin')

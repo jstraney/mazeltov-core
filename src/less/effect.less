@@ -1,0 +1,33 @@
+.transition(@rest...) {
+  -webkit-transition: @arguments;
+  -moz-transition: @arguments;
+  transition: @arguments;
+}
+
+input[type=submit],
+button,
+.button {
+  .transition(~"background-color 0.3s, color 0.3s");
+}
+
+a,
+input {
+  .transition(~"color 0.3s, color 0.3s");
+}
+
+@keyframes fade-fly-up {
+  0% {
+    top: 16rem;
+    opacity: 0;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+.fade-fly-up {
+  position: relative;
+  opacity: 0;
+  animation: fade-fly-up 0.7s 1 forwards;
+}

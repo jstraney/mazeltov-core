@@ -1,0 +1,39 @@
+//- Menu Mixins
+mixin nav-links(links, inline=false)
+  -let { class: _class = '' } = attributes;
+  -_class = _class.concat(inline ? ' menu inline' : ' menu');
+  -const attrOverrides = { class: _class }
+  ul&attributes(attributes)&attributes(attrOverrides)
+    each tuple of links
+      - const [uri, text, acl, resource] = tuple;
+      -let canAccess = true
+      if acl && gate && !gate(acl, resource)
+        -canAccess = false
+      if canAccess
+        li
+          a(
+            class=(request.uri === uri ? 'active' : '')
+            href=uri
+          )=text
+
+mixin menu(items, itemsInOrder = null, opts = {})
+  - const { level = 'h3', inline = false, resource = null, resourceMap = null } = opts;
+  if util.type.isString(items)
+    - items = menu(items, itemsInOrder, { resource, resourceMap });
+  //- pre=JSON.stringify(items, null, 2)
+  //- pre=JSON.stringify({ title: items.hasTitle, help: items.hasHelp, links: items.hasLinks, sub: items.hasSub})
+  div
+    if items.hasTitle
+      -const menuTitle = items.title
+      #{level}=menuTitle
+    if items.hasHelp
+      -const help = items.help
+      p=help
+    if items.hasLinks
+      -const links = items.links;
+      +nav-links(links, inline)&attributes(attributes)
+    //- TODO: implement
+    if items.hasSub
+      -const sub = items.sub;
+      each subMenu in sub
+        +menu(subMenu, null, opts)

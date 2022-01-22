@@ -1,0 +1,145 @@
+extends /layout/page
+
+mixin column-info(entityInfo)
+  details
+    summary Columns (#{entityInfo.columns.length})
+    table.banded
+      thead
+        tr
+          th Name
+          th Label
+          th PSQL Type
+      tbody
+        for name of entityInfo.columns
+          -const info = entityInfo.columnInfo[name]
+          tr
+            td
+              if info.isPrimary === true
+                i.fas.fa-key.icon.before
+              if info.isUnique === true
+                i.fas.fa-fingerprint.icon.before
+              if info.notNullable === true
+                i.fas.fa-asterisk.icon.before
+              span=name
+            td=info.label
+            td=info.psqltype
+
+mixin relation-info(entityInfo)
+  -const { hasOne, hasMany, belongsToOne, belongsToMany } = entityInfo;
+  -const allRels = hasOne.concat(hasMany, belongsToOne, belongsToMany)
+  -const numRelations = allRels.length;
+  if numRelations > 0
+    details
+      summary Relations (#{numRelations})
+      table.banded
+        thead
+          tr
+            th Kind
+            th To
+            th On
+            th By
+        tbody
+          each rel of hasOne
+            tr
+              td H-1
+              td=(`${rel.schema}.${rel.table}`)
+              if rel.onColumn
+                td=rel.onColumn
+              if rel.byColumn
+                td=(rel.byTable ? `${rel.byTable}.${rel.byColumn}` : rel.byColumn)
+          each rel of hasMany
+            tr
+              td H-n
+              td=(`${rel.schema}.${rel.table}`)
+              if rel.onColumn
+                td=rel.onColumn
+              if rel.byColumn
+                td=(rel.byTable ? `${rel.byTable}.${rel.byColumn}` : rel.byColumn)
+          each rel of belongsToOne
+            tr
+              td B-1
+              td=(`${rel.schema}.${rel.table}`)
+              if rel.onColumn
+                td=rel.onColumn
+              if rel.byColumn
+                td=(rel.byTable ? `${rel.byTable}.${rel.byColumn}` : rel.byColumn)
+          each rel of belongsToMany
+            tr
+              td B-n
+              td=(`${rel.schema}.${rel.table}`)
+              if rel.onColumn
+                td=rel.onColumn
+              if rel.byColumn
+                td=(rel.byTable ? `${rel.byTable}.${rel.byColumn}` : rel.byColumn)
+  else
+    span N/A
+block content
+
+  +form('Manage Models')
+
+    +menu('model').primary
+
+    div.row.spaced
+
+      details.col.quarter
+
+        summary Column Legend
+
+        fieldset.ui-frame
+
+          legend Column Legend
+
+          table
+            tr
+              th
+                i.fas.fa-key
+              td Primary Key
+            tr
+              th
+                i.fas.fa-fingerprint
+              td Unique Index
+            tr
+              th
+                i.fas.fa-asterisk
+              td Not Nullable
+
+      details.col.quarter
+
+        summary Relation Legend
+
+        fieldset.ui-frame
+
+          legend Column Legend
+
+          table
+            tr
+              th H-1
+              td Has One
+            tr
+              th H-n
+              td Has Many
+            tr
+              th B-1
+              td Belongs to One
+            tr
+              th B-n
+              td Belongs to Many
+
+    table.banded
+      thead
+        tr
+          th Schema
+          th Entity Name
+          th Columns
+          th Relations
+      tbody
+        for modelName of Object.keys(result.models).sort()
+          -const model = result.models[modelName] || {}
+          -const entityInfo = model._entityInfo;
+          tr
+            td=entityInfo.schema
+            td=entityInfo.entityName
+            td
+              +column-info(entityInfo)
+            td
+              +relation-info(entityInfo)

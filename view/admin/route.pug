@@ -1,0 +1,124 @@
+extends /layout/page
+
+block content
+
+  +form('Manage Routes').ui-frame
+
+    +menu('route').primary
+
+    div.row.spaced
+
+      fieldset.col.half
+
+        legend Route Types
+
+        div.row.spaced
+
+          label.col.third.hoverable
+            +input(
+              id='typesApi'
+              name=`types[]`
+              value='api'
+              type='checkbox'
+              checked=args.types && args.types.includes('api')
+            )
+            span API
+
+          label.col.third.hoverable
+            +input(
+              id='typesWeb'
+              name=`types[]`
+              value='web'
+              type='checkbox'
+              checked=args.types && args.types.includes('web')
+            )
+            span Web
+
+          label.col.third.hoverable
+            +input(
+              id='typesCli'
+              name=`types[]`
+              value='cli'
+              type='checkbox'
+              checked=args.types && args.types.includes('cli')
+            )
+            span CLI
+
+      fieldset.col.half
+
+        legend Route Enabled
+
+        div.row.spaced
+
+          label.col.third.hoverable
+            +input(
+              type='radio'
+              name='isEnabled'
+              value='_null'
+              checked=args.isEnabled === null
+            )
+            span All Routes
+
+          label.col.third.hoverable
+            +input(
+              type='radio'
+              name='isEnabled'
+              value='_true'
+              checked=(args.isEnabled === undefined || args.isEnabled === true)
+            )
+            span Enabled
+
+          label.col.third.hoverable
+            +input(
+              type='radio'
+              name='isEnabled'
+              value='_false'
+              checked=args.isEnabled === false
+            )
+            span Disabled
+
+    div.actions
+
+      input(
+        type='submit'
+        value='Search'
+      )
+
+      a.button(
+        href=request.uri
+      ) Clear
+
+    p.form-prompt.
+      Right now the <strong>Manage Routes</strong> page is a
+      reporting tool to show which potential routes are in use.
+      Routes are built lazily ahead of time using generic patterns
+      defined in controller services. But this doesn't mean that the
+      routes are exposed as shown in <strong>Enabled</strong> column.
+
+    p.form-prompt.
+      These actions are currently not supported through UI by core Mazeltov
+
+    ul
+      li Modifying routes at run-time, including enabling/disabling
+
+    each type of Object.keys(result.routes).sort()
+      - const routes = result.routes[type]
+      h2 #{util.string.capitalCase(type)} Routes
+      table.banded
+        thead
+          tr
+            th ID
+            th URI
+            th Methods
+            th Enabled
+        tbody
+          each routeId of Object.keys(routes).sort()
+            - const routeInfo = routes[routeId]
+            tr
+              td=routeId
+              td=routeInfo.uri
+              td=(routeInfo.methods || []).join(', ')
+              if routeInfo.enabled && routeInfo.enabled.length
+                td.success-color=(routeInfo.enabled || []).join(', ')
+              else
+                td.disabled None Enabled

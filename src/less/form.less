@@ -1,0 +1,260 @@
+/**** FORM ****/
+
+/** Global Form Elements **/
+select,
+textarea,
+input[type=text],
+input[type=number],
+input[type=password],
+input[type=date],
+input[type=email] {
+  padding: 1rem;
+  width: 100%;
+  margin: 1rem 0 2rem;
+  display: block;
+}
+
+select {
+  background-color: #fff;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width%3D"292.4" height%3D"292.4"%3E%3Cpath fill%3D"%23888888" d%3D"M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.5 5.4-7.8 5.4-12.8 0-5-1.9-9.2-5.5-12.8z"%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat, repeat;
+  background-position: right .7em top 50%, 0 0;
+  background-size: .65em auto, 100%;
+}
+
+select[multiple] {
+  background-image: none;
+  background-repeat: no-repeat;
+  min-height: 256px;
+}
+
+label {
+  display: block;
+  margin: 2rem 0 1rem;
+  font-weight: 500;
+}
+
+
+label > input {
+  margin-left: 1em;
+}
+
+/* very common inline elements that should be spaced */
+a, button, input[type=submit], .button {
+  .actions & + & {
+    margin-left: 2rem;
+  }
+}
+
+textarea {
+  resize: none;
+  min-height: 256px;
+}
+
+select,
+input,
+button,
+textarea {
+  background-color: @white;
+  font-family: inherit;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-size: inherit;
+  font-weight: 300;
+  .ui-border;
+}
+
+input[type=checkbox],
+input[type=radio] {
+  width: 1em;
+  height: 1em;
+  padding: 0;
+  margin: 0 1em 0 0;
+  vertical-align: middle;
+  display: inline-block;
+  border: @ui-border;
+  border-color: @gray;
+}
+
+input[type=radio] {
+  border-radius: 50%;
+}
+
+input[type=checkbox]:hover,
+input[type=radio]:hover {
+  cursor:pointer;
+  border-color: @light-gray;
+}
+
+input[type=checkbox]:checked,
+input[type=radio]:checked {
+  background-color: @darker-gray;
+  border-color: @gray;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled
+{
+  background-color: @light-gray;
+  border-color: @light-gray;
+}
+
+input:disabled:hover,
+select:disabled:hover,
+{
+  cursor: default;
+}
+
+
+button,
+input[type=submit],
+a.button,
+.button {
+  margin: 0.5em 0;
+  padding: 0.5em 1em;
+  min-width: 12rem;
+  min-height: 6rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-align: center;
+  background-color: @info-color;
+  color: @white;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  align-items: center;
+}
+
+button.alt,
+input.alt[type=submit],
+.button.alt {
+  background-color: @white;
+  color: @near-black;
+  .ui-border-3d;
+}
+
+button:hover,
+input[type=submit]:hover,
+.button:hover,
+select:hover,
+option:hover,
+a:hover {
+  cursor: pointer;
+}
+
+button:hover,
+input[type=submit]:hover,
+.button:hover {
+  background-color: @info-color + #500 - #005;
+  color: @white;
+}
+
+a.button {
+  line-height: 3.2rem;
+}
+
+a.button:hover {
+  text-decoration: none;
+}
+
+button.alt:hover,
+input.alt[type=submit]:hover,
+.button.alt:hover {
+  background-color: @lighter-gray;
+  color: @dark-gray;
+}
+
+/* useful for inline columns to make buttons vertically inline with inputs*/
+.actions button,
+.actions input[type=submit],
+.actions .button
+{
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  vertical-align: middle;
+}
+
+.inline.actions button,
+.inline.actions input[type=submit],
+.inline.actions .button
+{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+fieldset {
+  padding: 3rem 0 2rem 0;
+  margin-top: 4rem;
+  position: relative;
+  border: none;
+}
+
+legend {
+  position: absolute;
+  left: 0rem;
+  top: 0rem;
+}
+
+fieldset.ui-frame {
+  padding: 4rem 2rem 2rem;
+  background-color: @white;
+  .ui-border;
+}
+
+fieldset.ui-frame > legend {
+  padding: 1rem 2rem;
+  background-color: @white;
+  .ui-border;
+  left: 2rem;
+  top: -2rem;
+}
+
+fieldset.ui-frame-3d {
+  .ui-border-3d;
+  background-color: @white;
+  padding-top: 4rem;
+}
+
+fieldset.ui-frame-3d > legend {
+  .ui-border-3d;
+  background-color: @white;
+  border-radius: 4px;
+}
+
+
+/* Label Styling */
+label.disabled {
+  color: @gray;
+}
+
+label.disabled.hoverable {
+  cursor: default;
+}
+
+legend.required:after,
+label.required:after {
+  content: "*";
+  color: @error-color;
+  margin-left: 0.5em;
+}
+
+
+.error select,
+.error textarea,
+.error input,
+select.error,
+textarea.error,
+input.error {
+  border-color: @error-color;
+  border-width: 2px
+}
+
+/** Form Assistance **/
+.form-prompt {
+  font-size: 1.6rem;
+  font-style: italic;
+}

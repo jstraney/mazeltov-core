@@ -1,0 +1,294 @@
+/* Remember it's grAy in America and grEy in England */
+@black: #000;
+@near-black: #333;
+@darker-gray: #666;
+@dark-gray: #888;
+@gray: #aaa;
+@light-gray: #ccc;
+@lighter-gray: #ddd;
+@near-white: #eee;
+@white: #fff;
+
+/* functional colors */
+@success-color: #373;
+@info-color: #37c;
+@error-color: #f34;
+@warn-color: #c73;
+
+@anchor-color: @info-color;
+@anchor-hover-color: @gray;
+@anchor-color-alt: @light-gray;
+@anchor-active-color: @info-color + #500 - #005;
+@anchor-hover-color-alt: @gray;
+
+@dark-accent-color: #2863ae;
+@light-accent-color: @dark-accent-color + #021;
+
+.error-color {
+  color: @error-color;
+}
+
+.success-color {
+  color: @success-color;
+}
+
+.info-color{
+  color: @info-color;
+}
+
+.warn-color{
+  color: @warn-color;
+}
+
+
+@large-width: 1300px;
+@med-width: 768px;
+@small-width: 420px;
+
+@mobile-width: 961px;
+@footer-height: 300px;
+
+
+.block-centered {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.small-width {
+  .block-centered;
+  max-width: @small-width;
+}
+
+.med-width {
+  .block-centered;
+  max-width: @med-width;
+}
+
+.large-width {
+  .block-centered;
+  max-width: @large-width;
+}
+
+/** Responsive Columns & Containers**/
+
+@ui-border: 1px solid @lighter-gray;
+
+.ui-border {
+  border: @ui-border;
+  border-radius: 4px;
+}
+
+.ui-border-3d {
+  .ui-border;
+  border-bottom: 4px double @lighter-gray;
+}
+
+.ui-frame {
+  .ui-border-3d;
+  background-color: @white;
+  padding: 1em;
+}
+
+/* adjust for inserted white-space */
+@col-adjust-space: 0.35999rem;
+
+.col {
+  /*margin-left: -@col-adjust-space;*/
+  position: relative;
+  /*left: @col-adjust-space;*/
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  max-width: 100%;
+}
+
+.padded {
+  padding: 2em
+}
+
+.xtall {
+  height: 768px;
+}
+
+.tall {
+  height: 628px;
+}
+
+.med-height {
+  height: 320px;
+}
+
+.short {
+  height: 200px;
+}
+
+.xshort {
+  height: 80px;
+}
+
+@row-col-space: calc(1.23699rem);
+
+.row {
+  display: flex;
+}
+
+.row.spaced > .col + .col {
+  margin-left: @row-col-space;
+}
+
+/* TODO: deprecate full, half, quarter in favor of w-12 style columns */
+/* TODO: really design and plan various column and height classes */
+
+/* columns can be prefixed with small- to retain max-widths at narrower screens */
+.col.w-12,
+.col.full {
+  max-width: 100%;
+}
+
+.col.w-9,
+.col.three-quarter {
+  max-width: 75%;
+}
+
+.col.w-8,
+.col.two-third {
+  max-width: 66.66%;
+}
+
+.col.w-6,
+.col.half {
+  max-width: 50%;
+}
+
+.col.w-4,
+.col.third {
+  max-width: 33.333%;
+}
+
+.col.w-3,
+.col.quarter {
+  max-width: 25%;
+}
+
+
+/** Helpers **/
+.no-js {
+ visibility: hidden;
+ opacity: 0;
+}
+
+.js {
+ visibility: visible;
+ opacity: 1;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.halign-left,
+.halign-center,
+.halign-right,
+.valign-top,
+.valign-center,
+.valign-bottom {
+  display: flex;
+}
+
+// for flex positioned images
+.img-flex {
+  display: block;
+  margin-left: initial;
+  margin-right: initial;
+}
+
+// for fitting image height to 100% (default of auto which may overflow)
+.img-h-fitted {
+  height: 100%;
+}
+
+.img-h-auto{
+  height: auto;
+}
+
+.valign-top {
+  align-items: top;
+}
+
+.valign-center {
+  align-items: center;
+}
+
+.valign-bottom {
+  align-items: end;
+}
+
+.halign-left {
+  justify-content: left;
+}
+
+.halign-center {
+  justify-content: center;
+}
+
+.halign-right {
+  justify-content: right;
+}
+
+.perfect-center {
+  position: relative;
+}
+
+.perfect-center > :first-child {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+
+/* best used in combination with classes such as .med-width */
+.viewport-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+
+/* not great for form inputs that need to be sent. use .invisible instead */
+.hidden {
+  display: none;
+};
+
+.invisible {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: inline;
+};
+
+.inline-middle {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.inline-middle + .inline-middle {
+  margin-left: 1em;
+}
+
+.hoverable:hover {
+  cursor: pointer;
+}

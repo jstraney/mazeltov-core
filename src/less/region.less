@@ -1,0 +1,119 @@
+/**** REGION ****/
+
+/* styles for specific sections of the page */
+
+/** Global Regions **/
+
+header,
+main,
+footer {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+
+/** Header, Logo, Nav **/
+
+header a.logo {
+  float: left;
+}
+
+header a.logo img {
+  width: 6rem;
+  height: auto;
+}
+
+header {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  background-color: @white;
+  border-bottom: @ui-border;
+  display: flex;
+}
+
+header nav {
+  text-align: right;
+  width: 100%;
+  .large-width;
+}
+
+header nav a {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+nav a + a {
+  margin-left: 1em;
+}
+
+/** Main, Section, Messages **/
+
+#flash {
+  .ui-border;
+  padding: 1rem;
+  margin-top: 2em;
+  background-color: #fff6;
+}
+
+main {
+  max-width: @large-width;
+  margin: 2em auto;
+  padding: 1em;
+}
+
+section {
+  padding: 1em 0;
+}
+
+.messages {
+  font-style: italic;
+}
+
+.messages.error {
+  color: @error-color;
+}
+
+
+/** Footer **/
+
+footer {
+  margin-top: 2em;
+  color: @white;
+  background-color: @near-black;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  height: @footer-height;
+}
+
+footer .menu {
+  margin-top: 2rem;
+}
+
+footer .menu {
+  margin-top: 2rem;
+}
+
+footer h1,
+footer h2,
+footer h3,
+footer h4,
+footer h5,
+footer h6 {
+  color: @white;
+  font-weight: 500;
+  text-align: left;
+}
+
+footer a,
+footer a:link,
+footer a:active,
+footer a:visited {
+  color: @anchor-color-alt;
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: @anchor-hover-color-alt;
+}

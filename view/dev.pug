@@ -1,0 +1,38 @@
+mixin debug
+
+  if NODE_ENV === 'development'
+
+    div.debug
+
+      details
+        summary
+          strong Developer Debug
+
+        details
+          summary
+            strong result
+          pre
+            code=JSON.stringify(result, null, 2)
+
+        details
+          summary
+            strong error
+          pre
+            code=JSON.stringify(error, null, 2)
+
+        details
+          summary
+            strong session
+          pre
+            code=JSON.stringify(session, null, 2)
+
+        details
+          summary
+            strong request
+          pre
+            code=JSON.stringify(request, null, 2)
+
+      p.form-prompt.
+        <i class='fas fa-exclamation-triangle icon before'></i>
+        This should not be visible when NODE_ENV !== 'development' if you are
+        seeing this in your production site, fix immediately.

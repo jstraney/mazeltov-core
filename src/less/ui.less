@@ -1,0 +1,204 @@
+/** Alternate Theme **/
+.alt {
+
+  background-color: @near-black;
+  color: @white;
+
+  a, a:link, a:active, a:visited {
+    color: @light-gray;
+  }
+
+  a:hover {
+    color: @gray;
+  }
+
+}
+
+/** Icons **/
+.icon {
+  display: inline-block;
+  vertical-align: baseline;
+}
+
+.icon.before {
+  margin-right: 0.5em;
+}
+
+.icon.after {
+  margin-left: 0.5em;
+}
+
+.icon.success {
+  .success-color;
+}
+
+.icon.info {
+  .info-color;
+}
+
+.icon.warning {
+  .warn-color;
+}
+
+.icon.error {
+  .error-color;
+}
+
+/** Breadcrumb **/
+.breadcrumb {
+  font-size: 1.2em;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.breadcrumb .crumb,
+.breadcrumb .spacer {
+  color: @darker-gray;
+  .inline-middle;
+}
+
+.breadcrumb a.crumb:hover {
+  color: @gray;
+}
+
+
+.spacer, .crumb {
+  .breadcrumb & + & {
+    margin-left: 2rem;
+  }
+}
+
+/** Pagination **/
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+a, span {
+  .pagination & + & {
+    margin-left: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .pagination & {
+    flex: 0 0 4rem;
+    text-align: center;
+  }
+
+  .pagination &.active {
+    font-weight: 500;
+    color: @near-black;
+    text-decoration: underline;
+  }
+
+}
+
+/** Tooltip **/
+.tooltip {
+  color: @gray;
+}
+
+.tooltip .__react_component_tooltip {
+  opacity: 1;
+}
+
+.tooltip .type-success {
+  background-color: @success-color;
+}
+
+.tooltip .__react_component_tooltip.type-success:after {
+  border-top-color: @success-color;
+}
+
+.tooltip .type-info {
+  background-color: @info-color;
+}
+
+.tooltip .__react_component_tooltip.type-info:after {
+  border-top-color: @info-color;
+}
+
+.tooltip .type-warning {
+  background-color: @warn-color;
+}
+
+.tooltip .__react_component_tooltip.type-warning:after {
+  border-top-color: @warn-color;
+}
+
+.tooltip .type-error{
+  background-color: @error-color;
+}
+
+.tooltip .__react_component_tooltip.type-error:after {
+  border-top-color: @error-color;
+}
+
+/** Code Styling **/
+code .var {
+  color: @light-gray;
+}
+
+code .bold {
+  color: @warn-color;
+}
+
+/** Mobile Phone Field **/
+.input-phone select,
+.input-phone input {
+  flex: 0 1 6rem;
+}
+
+.input-phone .phone-subscriber {
+  flex: 0 1 8rem;
+}
+
+/** Autocomplete **/
+.auto-complete {
+  position: relative;
+}
+
+.auto-complete .suggestions {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 30rem;
+  bottom: -31rem;
+  z-index: 1;
+}
+
+.auto-complete .suggestions .suggestion {
+  padding: 1rem 2rem;
+  height: 5rem;
+  background-color: @white;
+  border-right: @ui-border;
+  border-bottom: @ui-border;
+  border-left: @ui-border;
+  float: left;
+  clear: both;
+  width: 100%;
+}
+
+.auto-complete .suggestion:first-of-type {
+  border-top: @ui-border;
+}
+
+.auto-complete .suggestions .suggestion:hover {
+  padding: 1rem 2rem;
+  background-color: @near-white;
+}
+
+/** Helpers **/
+
+.table-wrapper {
+  overflow-x: auto;
+  margin: 2rem auto;
+}
+
+.table-wrapper table {
+  margin: 0 auto;
+}
