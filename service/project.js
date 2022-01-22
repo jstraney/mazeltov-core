@@ -166,19 +166,6 @@ module.exports = ( ctx = {} ) => {
       APP_DB_PASSWORD: databasePassword,
       APP_DB_USER: databaseUser,
       APP_REDIS_PASSWORD: redisPassword,
-
-      /* TODO: Create the <name>ModuleInstall hook
-       * and have the following set by @mazeltov/access module in DB
-       * or to .env file.
-       *
-       * SELF_CLIENT_ID: randStr(32),
-       * SELF_CLIENT_SECRET: randStr(32),
-       * SELF_CLIENT_REDIRECT_URLS: `https://${hostname}/account`,
-       * DEFAULT_CLIENT_ID: randStr(32),
-       * DEFAULT_CLIENT_SECRET: randStr(32),
-       * DEFAULT_CLIENT_REDIRECT_URLS: `https://${hostname}/account`,
-       * DEFAULT_PERSON_PASSWORD: randStr(32),
-       */
     };
 
     let newEnv = fs.readFileSync(`${rootDir}/example.env`, { encoding: 'utf8' });

@@ -1,6 +1,6 @@
 {
   "name": "@mazeltov/core",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Base controllers, services, model libraries",
   "main": "index.js",
   "scripts": {
