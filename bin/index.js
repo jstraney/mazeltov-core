@@ -16,6 +16,24 @@ const path = require('path');
     inProject = pkg.generatedWith === 'mazeltov';
   }
 
+  // some services really shouldn't bootstrap the entire
+  // application for simplicity. Imagine trying to run migrations
+  // and seeders for an app that calls module code that depends on
+  // a schema to exist. commands beginning with these also use
+  // bare bones services.
+  // This includes the following:
+  const useSimpleBoot = [
+    'migration',
+    'module',
+    'setting',
+    'project',
+    'view',
+    'seed',
+  ].map((name) => new RegExp(`^${name}`))
+  .reduce((use, regexp) => {
+    return use || regexp.test(process.argv[2])
+  }, false);
+
   const ctx = {
     appRoot: cwd,
     inProject,
@@ -24,14 +42,14 @@ const path = require('path');
 
   // if in the project directory, load the projects services,
   // models and controllers to be used by cli.
-  if (inProject) {
+  if (inProject && !useSimpleBoot) {
 
     const project = await require(path.resolve(cwd, 'index.js'))(ctx);
 
     project.controllers.cliControllers.prepareAndRun(process.argv.slice(2));
 
-  // load the "dry powder" needed to scaffold a new project, or run the
-  // cli without any project available.
+  // Do a bare minimum boot to prevent circular dependencies on database
+  // and module code that may depend on it.
   } else {
 
     const {
