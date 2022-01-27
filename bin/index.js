@@ -16,6 +16,14 @@ const path = require('path');
     inProject = pkg.generatedWith === 'mazeltov';
   }
 
+  const envFilePath = process.env.APP_ENV_PATH || cwd;
+
+  const envExists = existsSync(path.resolve(envFilePath, '.env'));
+
+  if (envExists) {
+    require('dotenv').config({ path: path.resolve(envFilePath, '.env')});
+  }
+
   // some services really shouldn't bootstrap the entire
   // application for simplicity. Imagine trying to run migrations
   // and seeders for an app that calls module code that depends on
@@ -37,16 +45,18 @@ const path = require('path');
   const ctx = {
     appRoot: cwd,
     inProject,
+    envExists,
     loggerLib: require('../lib/logger'),
   };
 
   // if in the project directory, load the projects services,
   // models and controllers to be used by cli.
-  if (inProject && !useSimpleBoot) {
+  if (inProject && envExists && !useSimpleBoot) {
 
+    // console.log('yeah boi');
     const project = await require(path.resolve(cwd, 'index.js'))(ctx);
 
-    project.controllers.cliControllers.prepareAndRun(process.argv.slice(2));
+    await project.controllers.cliControllers.prepareAndRun(process.argv.slice(2));
 
   // Do a bare minimum boot to prevent circular dependencies on database
   // and module code that may depend on it.

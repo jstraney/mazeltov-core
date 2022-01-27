@@ -69,7 +69,7 @@ module.exports = ( ctx = {} ) => {
     const controllerPath = path.join(modulePath, `controller/index.js`);
     const hasControllers = fs.existsSync(controllerPath);
 
-    const servicePath = path.join(modulePath, `services/index.js`);
+    const servicePath = path.join(modulePath, `service/index.js`);
     const hasServices = fs.existsSync(servicePath);
 
     // check if there are migrations and link
@@ -126,7 +126,7 @@ module.exports = ( ctx = {} ) => {
       .merge();
 
     // allow code to run when installing the service
-    const installServicePath = path.join(modulePath, 'services/install.js');
+    const installServicePath = path.join(modulePath, 'service/install.js');
     const hasInstallService = fs.existsSync(installServicePath);
 
     if (hasInstallService && !upgrade) {
@@ -136,7 +136,7 @@ module.exports = ( ctx = {} ) => {
 
     // TODO: upgrade service hooks? Maybe something like...
     // if (upgrade) {
-    //   const upgradeServicePath = path.join(modulePath, 'services/upgrade.js');
+    //   const upgradeServicePath = path.join(modulePath, 'service/upgrade.js');
     //   const hasUpgradeService = fs.existsSync(upgradeServicePath);
     //   if (hasUpgradeService) {
     //     const version = pkg.version.replace(/\./g, '_');
@@ -232,7 +232,7 @@ module.exports = ( ctx = {} ) => {
     logger.info('Uninstalled npm package %s', moduleName);
 
     // allow code to run when installing the service
-    const unistallServicePath = path.join(modulePath, 'services/uninstall.js');
+    const unistallServicePath = path.join(modulePath, 'service/uninstall.js');
     const hasUninstallService = fs.existsSync(uninstallServicePath);
 
     if (hasUninstallService) {

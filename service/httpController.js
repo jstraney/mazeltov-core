@@ -36,7 +36,23 @@ module.exports = ( ctx ) => {
 
   hookService.onRedux('useArgs', (_, action, model, method) => {
 
-    const hasCompositeKeys = model._keys.length > 1;
+    const {
+      _entityInfo = null,
+    } = model;
+
+    if (!_entityInfo) {
+      return null;
+    }
+
+    const {
+      key = ['id'],
+      entityName,
+      listArgs = [],
+      createColumns,
+      updateColumns,
+    } = _entityInfo;
+
+    const hasCompositeKeys = (key).length > 1;
 
     if (method === 'get') {
       switch (action) {
@@ -51,20 +67,20 @@ module.exports = ( ctx ) => {
               'updatedAtEnd',
               'page',
               'limit',
-            ].concat(model._listArgs),
+            ].concat(listArgs),
           };
         case 'bulkPut':
         case 'bulkRemove':
         case 'bulkCreate':
         case 'bulkMerge':
-          return { query: [model._entityName + 'List'] };
+          return { query: [entityName + 'List'] };
         default:
           return hasCompositeKeys
             ? {
-              query: model._keys,
+              query: key,
             }
             : {
-              params: model._keys,
+              params: key,
             };
       }
     }
@@ -72,32 +88,32 @@ module.exports = ( ctx ) => {
     switch (action) {
       case 'create':
         return {
-          body: model._createColumns,
+          body: createColumns,
         };
       case 'update':
         return hasCompositeKeys
           ? {
-            body: model._keys.concat(model._updateColumns),
+            body: key.concat(updateColumns),
           }
           : {
-            params: model._keys,
-            body: model._updateColumns,
+            params: key,
+            body: updateColumns,
           };
       case 'bulkPut':
       case 'bulkRemove':
       case 'bulkCreate':
       case 'bulkMerge':
-        return { body: [model._entityName + 'List'] };
+        return { body: [entityName + 'List'] };
       case 'remove':
       case 'softRemove':
       case 'softRestore':
       default:
         return hasCompositeKeys
           ? {
-            query: model._keys,
+            query: key,
           }
           : {
-            params: model._keys,
+            params: key,
           };
     }
   });

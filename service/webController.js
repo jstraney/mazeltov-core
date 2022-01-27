@@ -70,7 +70,7 @@ module.exports = ( ctx ) => {
     const pascalAction = pascalCase(action);
 
     if (method === 'post') {
-      return model[`validate${pascalAction}`];
+      return model[`validate${pascalAction}`] || null;
     }
 
     switch (action) {
@@ -143,7 +143,17 @@ module.exports = ( ctx ) => {
 
   onRedux('webTemplateArgs', (_, action, model) => {
 
-    const entityName = model._entityName;
+    const {
+      _entityInfo = null,
+    } = model;
+
+    if (!_entityInfo) {
+      return null;
+    }
+
+    const {
+      entityName
+    } = _entityInfo;
 
     const paramEntity = paramCase(entityName);
     const paramAction = paramCase(action);
@@ -289,7 +299,7 @@ module.exports = ( ctx ) => {
 
     stack.set('requireCSRF', requireCSRF({
       authorizedHostname: appSettings.APP_HOSTNAME,
-      errorRedirectURL: route('signIn'),
+      errorRedirectURL: route('signIn') || route('home'),
       logger,
     }));
 

@@ -44,7 +44,7 @@ module.exports = ( ctx ) => {
     .get('adminPage', [
       _useCSRF,
       viewTemplate, {
-        template: 'core/admin',
+        template: 'admin',
       },
     ])
     .get('manage:route', [
@@ -63,7 +63,7 @@ module.exports = ( ctx ) => {
         },
       },
       viewTemplate, {
-        template: 'core/admin/route',
+        template: 'admin/route',
       },
     ])
     .get('manage:model', [
@@ -74,7 +74,7 @@ module.exports = ( ctx ) => {
         },
       },
       viewTemplate, {
-        template: 'core/admin/model',
+        template: 'admin/model',
       },
     ])
     .get('manage:cache', [
@@ -85,7 +85,7 @@ module.exports = ( ctx ) => {
         },
       },
       viewTemplate, {
-        template: 'core/admin/cache',
+        template: 'admin/cache',
       },
     ])
     .post('purge:cache', [

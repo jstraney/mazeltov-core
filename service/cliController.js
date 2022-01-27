@@ -299,9 +299,17 @@ module.exports = ( ctx ) => {
 
     const model = loadedModels[modelName];
 
-    const entityName = model._entityName;
+    const {
+      _entityInfo = null,
+    } = model;
 
-    const hasCompositeKey = model._keys.length > 1;
+    if (!_entityInfo) {
+      return;
+    }
+
+    const {
+      entityName,
+    } = _entityInfo;
 
     const addedRouteIds = {};
 

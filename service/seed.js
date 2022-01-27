@@ -105,6 +105,11 @@ module.exports = ( ctx ) => {
 
       const seederFiles = await fs.readdir(seedEnvDir);
 
+      if (!seederFiles.length) {
+        logger.info('No seeders found in %s', seedEnvDir);
+        return;
+      }
+
       for (const file of seederFiles) {
         const fullPath = path.join(seedEnvDir, file);
         const seeder = require(fullPath);
@@ -132,10 +137,16 @@ module.exports = ( ctx ) => {
 
     const seederFile = path.join(seedEnvDir, fileName);
 
+    if (!existsSync(seederFile)) {
+      logger.info('No seeders found in %s', seedEnvDir);
+      return;
+    }
+
     const seeder = require(seederFile);
 
     try {
       await seeder(trx);
+      await trx.commit();
       logger.info('Seeder %s completed', fileName);
     } catch (error) {
       logger.error('%o', error);
@@ -143,8 +154,6 @@ module.exports = ( ctx ) => {
       await trx.rollback();
       return;
     }
-
-    await trx.commit()
 
   }
 

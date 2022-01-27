@@ -234,6 +234,10 @@ module.exports = ( ctx = {} ) => {
       _entityInfo,
     } = model;
 
+    if (!_entityInfo) {
+      return stack;
+    }
+
     const {
       key,
       entityName,
@@ -327,6 +331,10 @@ module.exports = ( ctx = {} ) => {
       _entityInfo,
     } = model;
 
+    if (!_entityInfo) {
+      return stack;
+    }
+
     const {
       key,
       entityName,
@@ -371,6 +379,10 @@ module.exports = ( ctx = {} ) => {
     const {
       _entityInfo,
     } = model;
+
+    if (!_entityInfo) {
+      return stack;
+    }
 
     const {
       key,

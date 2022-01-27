@@ -4,6 +4,7 @@ module.exports = async ( ctx ) => {
 
   const {
     appRoot,
+    envExists,
     inProject,
     services: {
       envService: {
@@ -18,9 +19,10 @@ module.exports = async ( ctx ) => {
 
   const logger = loggerLib('@mazeltov/core/service/db');
 
-  if (!inProject) {
+  if (!inProject || !envExists) {
     return null;
   }
+
   // These are only available in the .env file for now
   // It'd be cool to be able to set this in DB itself but is
   // a clear circular dependency (cannot use settingService to
@@ -36,6 +38,7 @@ module.exports = async ( ctx ) => {
     'app.dbMaxPool',
     'app.dbTimeout'
   ], true);
+
 
   const knexfilePath = path.resolve(appRoot, 'knexfile.js');
   const knexfileExport = await require(knexfilePath)(knexSettings);

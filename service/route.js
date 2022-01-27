@@ -3,6 +3,7 @@ const {
     beginsWith,
     paramCase,
     sentenceCase,
+    pluralize,
     objFromQuery,
     fmtPlaceholder,
   },
@@ -116,8 +117,19 @@ module.exports = async ( ctx = {} ) => {
 
   hookService.onRedux('routeLabel', ( action, model) => {
 
-    const entityLabel = model._entityLabel;
-    const entityLabelPlural = model._entityLabelPlural;
+    const {
+      _entityInfo = null,
+    } = model;
+
+    if (!_entityInfo) {
+      return;
+    }
+
+    const {
+      entityName,
+      entityLabel = sentenceCase(entityName),
+      entityLabelPlural = pluralize(entityLabel),
+    } = _entityInfo;
 
     switch (action) {
       case 'create':
@@ -175,6 +187,7 @@ module.exports = async ( ctx = {} ) => {
       case 'list':
         return routeBasePlural;
       case 'get':
+        return `${defaultRoute}`;
       case 'update':
         return `${defaultRoute}/edit`;
       case 'remove':
@@ -324,7 +337,7 @@ module.exports = async ( ctx = {} ) => {
   };
 
   const routeInfo = (id, controller = 'web') => {
-    return hookService.redux(`${controller}Route`)[id] || {};
+    return hookService.redux(`${controller}Route`, {})[id] || {};
   };
 
   const routeUri = (id, params, controller = 'web') => {
@@ -339,7 +352,7 @@ module.exports = async ( ctx = {} ) => {
   };
 
   const registerRoutes = (nextRoutes = {}, type='web') => {
-    hookService.onRedux(`${type}Route`, (routes) => ({
+    hookService.onRedux(`${type}Route`, (routes = {}) => ({
       ...routes,
       ...nextRoutes
     }));

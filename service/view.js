@@ -7,13 +7,15 @@ const existsSync = require('fs').existsSync;
 module.exports = ( ctx = {} ) => {
 
   const {
+    appRoot,
     loggerLib,
-    services = {},
+    services: {
+      projectService,
+      hookService: {
+        onRedux,
+      },
+    },
   } = ctx;
-
-  const {
-    projectService,
-  } = services;
 
   const logger = loggerLib('@mazeltov/cli/service/view');
 
@@ -87,6 +89,11 @@ module.exports = ( ctx = {} ) => {
     logger.info('Removed views at %s', linkPath);
 
   };
+
+  onRedux('viewDir', (viewDirs = []) => [
+    ...viewDirs,
+    path.resolve(appRoot, 'view/@mazeltov/core'),
+  ]);
 
   return {
     link,

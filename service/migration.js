@@ -20,6 +20,7 @@ const prompt = require('prompt');
 module.exports = ( ctx = {} ) => {
 
   const {
+    appRoot,
     loggerLib,
     services: {
       dbService: db,
@@ -29,9 +30,12 @@ module.exports = ( ctx = {} ) => {
 
   const logger = loggerLib('@mazeltov/cli/service/migration');
 
-  const getMigrationFiles = async (baseDir, moduleName) => {
+  const getMigrationFiles = async (baseDir, moduleName = 'app') => {
 
-    const modulePath = projectService.getModulePath(baseDir, moduleName)
+    const modulePath = moduleName === 'app'
+      ? appRoot
+      : projectService.getModulePath(baseDir, moduleName)
+
     const migrationDirPath = path.join(modulePath, `/migrate`);
     const migrations = await fs.readdir(migrationDirPath);
 
