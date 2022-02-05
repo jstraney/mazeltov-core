@@ -118,7 +118,9 @@ block content
               td=routeId
               td=routeInfo.uri
               td=(routeInfo.methods || []).join(', ')
-              if routeInfo.enabled && routeInfo.enabled.length
+              if type !== 'cli' && routeInfo.enabled && routeInfo.enabled.length
                 td.success-color=(routeInfo.enabled || []).join(', ')
+              else if type === 'cli' && routeInfo.enabled
+                td.success-color yes
               else
-                td.disabled None Enabled
+                td.disabled Not Enabled

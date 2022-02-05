@@ -386,7 +386,6 @@ module.exports = async ( ctx = {} ) => {
     }, {});
   };
 
-
   return {
     registerRoutes,
     routeInfo,

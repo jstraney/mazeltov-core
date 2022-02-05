@@ -35,11 +35,20 @@ module.exports = ( ctx ) => {
       routeService: {
         routeInfo: getRouteInfo,
       },
+      settingService: {
+        getSettings,
+      },
     },
     loggerLib,
   } = ctx;
 
   const logger = loggerLib('@mazeltov/core/service/apiController');
+
+  const [
+    appName,
+  ] = getSettings([
+    'app.name',
+  ]);
 
   onRedux('apiRouteMiddleware', (stack, action, model, routeInfo, method) => {
 
@@ -93,7 +102,7 @@ module.exports = ( ctx ) => {
 
     if (!loadedModels[modelName]) {
       logger.warn("%s is not a registered model. Skipping", modelName);
-      return;
+      return null;
     }
 
     const model = loadedModels[modelName];
@@ -107,14 +116,23 @@ module.exports = ( ctx ) => {
     actions.forEach((action) => {
 
       if (!model[action]) {
-        logger.warn('No %s action on %s', action, modelName)
-        return;
+        logger.warn('%s does not have %s method', modelName, action);
+        return null;
       }
 
       const {
-        schema,
+        schema = appName,
         entityName,
       } = model._entityInfo || {}
+
+      if (!entityName) {
+        logger.warn('_entityInfo.entityName is missing for %s', modelName);
+        return null;
+      }
+      if (!schema) {
+        logger.warn('_entityInfo.schema property is missing for %s', modelName);
+        return null;
+      }
 
       // TODO: replace with method call to core routeService
       const routeId = `${action}:${schema}.${entityName}`;
@@ -125,6 +143,17 @@ module.exports = ( ctx ) => {
         uri,
         methods = [],
       } = routeInfo;
+
+      if (!uri || !methods || !methods.length) {
+        logger.warn('No api route for route id %s', routeId);
+        logger.warn([
+          'This is either because the route id is incorrect',
+          'or because the route wasn\'t registered with',
+          'onRedux(\'apiRoute\', cb) in a service. Defining',
+          'a %s table with the %s schema should register the route id for you.',
+        ].join(' '), entityName, schema);
+        return null;
+      }
 
       const stacks = {};
 
@@ -140,7 +169,7 @@ module.exports = ( ctx ) => {
           config
         );
 
-        logger.debug('added %s %s', method, uri)
+        logger.debug('added %s /api%s', method, uri)
 
         router[method](uri, stack.middleware());
 

@@ -90,10 +90,10 @@ module.exports = ( ctx = {} ) => {
 
     if (skipPrompt) {
       return {
-        serviceName: 'mazeltov',
-        hostname: 'local.mazeltov.com',
-        databaseName: 'mazeltov',
-        databaseUser: 'mazeltov',
+        serviceName: 'app',
+        hostname: 'local.app.com',
+        databaseName: 'app',
+        databaseUser: 'app',
         databasePassword: randStr(32),
         redisPassword: randStr(32),
       };
@@ -109,20 +109,20 @@ module.exports = ( ctx = {} ) => {
         serviceName: {
           description: 'Service Name',
           required: true,
-          default: 'mazeltov',
+          default: 'app',
         },
         hostname: {
           description: 'Host Name',
           required: true,
-          default: 'local.mazeltov.com',
+          default: 'local.app.com',
         },
         databaseName: {
           description: 'Database Name',
-          default: 'mazeltov',
+          default: 'app',
         },
         databaseUser: {
           description: 'Database User',
-          default: 'mazeltov',
+          default: 'app',
         },
         databasePassword: {
           description: 'Database Password',

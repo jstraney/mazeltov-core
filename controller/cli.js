@@ -45,12 +45,15 @@ module.exports = (ctx) => {
   });
 
   return async (ctx, params, dir = null) => {
+
     const cliControllers = await loader(ctx, params, dir);
+
     return {
       cliControllers,
       prepare,
       prepareAndRun,
     };
-  }
+
+  };
 
 };

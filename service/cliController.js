@@ -17,6 +17,7 @@ cliUsage = require('command-line-usage');
 module.exports = ( ctx ) => {
 
   const {
+    loggerLib,
     services: {
       controllerService,
       hookService: {
@@ -32,6 +33,8 @@ module.exports = ( ctx ) => {
       },
     },
   } = ctx;
+
+  const logger = loggerLib('@mazeltov/core/service/cliController');
 
   onRedux('cliOptionType', (_, psqlType) => {
     switch (psqlType) {
@@ -294,7 +297,7 @@ module.exports = ( ctx ) => {
 
     if (!loadedModels[modelName]) {
       logger.warn("%s is not a registered model. Skipping", modelName);
-      return;
+      return null;
     }
 
     const model = loadedModels[modelName];
@@ -304,19 +307,30 @@ module.exports = ( ctx ) => {
     } = model;
 
     if (!_entityInfo) {
-      return;
+      return null;
     }
 
     const {
+      schema = APP_NAME,
       entityName,
     } = _entityInfo;
+
+    if (!entityName) {
+      logger.warn('_entityInfo.entityName is missing for %s', modelName);
+      return null;
+    }
+    if (!schema) {
+      logger.warn('_entityInfo.schema property is missing for %s', modelName);
+      return null;
+    }
 
     const addedRouteIds = {};
 
     actions.forEach((action) => {
 
       if (!model[action]) {
-        return;
+        logger.warn('%s does not have %s method', modelName, action);
+        return null;
       }
 
       // TODO: replace with method call to core routeService
@@ -330,8 +344,15 @@ module.exports = ( ctx ) => {
         help = [],
       } = routeInfo;
 
-      if (uri === null) {
-        return;
+      if (!uri) {
+        logger.warn('No cli route for route id %s', routeId);
+        logger.warn([
+          'This is either because the route id is incorrect',
+          'or because the route wasn\'t registered with',
+          'onRedux(\'cliRoute\', cb) in a service. Defining',
+          'a %s table with the %s schema should register the route id for you.',
+        ].join(' '), entityName, schema);
+        return null;
       }
 
       const commandDef = {
@@ -346,7 +367,9 @@ module.exports = ( ctx ) => {
         commandDef.validator = model[`validate${pascalAction}`];
       }
 
-      registerConsoleCommand(`${entityName} ${action}`, commandDef);
+      registerConsoleCommand(uri, commandDef);
+
+      logger.debug('added cli command "%s"', uri)
 
       addedRouteIds[routeId] = true;
 

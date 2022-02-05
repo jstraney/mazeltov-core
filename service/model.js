@@ -496,6 +496,8 @@ module.exports = async ( ctx = {} ) => {
     : hookService.redux('entityInfo')[fullName] || {};
 
   const registerModels = (nextModels = {}) => {
+    // register any routes as well.
+
     hookService.onRedux('model', (models) => ({
       ...models,
       ...nextModels

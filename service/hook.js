@@ -24,7 +24,7 @@ module.exports = ( ctx ) => {
     loggerLib,
   } = ctx;
 
-  logger = loggerLib('@mazeltov/core/service/hook');
+  const logger = loggerLib('@mazeltov/core/service/hook');
 
   // TODO: there can very well be a use-case for async hooks.
   // hooks should perform side-effects where each callback is

@@ -19,7 +19,10 @@ module.exports = ( ctx ) => {
         getSettings,
       },
     },
+    loggerLib,
   } = ctx;
+
+  const logger = loggerLib('@mazeltov/core/controller/cli/server');
 
   const [
     appCertFile,

@@ -8,6 +8,7 @@ const {
     noCase,
     pascalCase,
     paramCase,
+    sentenceCase,
   },
   type: {
     isObject,
@@ -45,6 +46,7 @@ module.exports = ( ctx ) => {
       },
       routeService: {
         route,
+        routeUri,
         routeInfo: getRouteInfo,
       },
       menuService: {
@@ -340,9 +342,14 @@ module.exports = ( ctx ) => {
       ? noCase(action) + 'd'
       : noCase(action) + 'ed';
 
+    const {
+      entityName,
+      entityLabel = sentenceCase(entityName),
+    } = (model._entityInfo || {})
+
     const resultFlashMessage = redux(
       'webResultMessage',
-      `Your ${noCase(model._entityLabel)} was ${actionPastTense} successfully`,
+      `Your ${noCase(entityLabel)} was ${actionPastTense} successfully`,
       action,
       model
     );
@@ -365,6 +372,7 @@ module.exports = ( ctx ) => {
     util: require('../lib/util'),
     basedir: path.resolve(ctx.appRoot, 'view'),
     menu: getMenu,
+    route: routeUri,
   }));
 
   const webControllerParams = controllerService.subtypeControllerParams;
@@ -386,7 +394,7 @@ module.exports = ( ctx ) => {
 
     if (!loadedModels[modelName]) {
       logger.warn("%s is not a registered model. Skipping", modelName);
-      return;
+      return null;
     }
 
     const model = loadedModels[modelName];
@@ -398,15 +406,25 @@ module.exports = ( ctx ) => {
     actions.forEach((action) => {
 
       if (!model[action]) {
-        return;
+        logger.warn('%s does not have %s method', modelName, action);
+        return null;
       }
 
       const {
         entityName,
-        schema,
+        schema = appSettings.APP_NAME,
       } = model._entityInfo || {};
 
-      const pascalEntity = model._pascalName;
+      if (!entityName) {
+        logger.warn('_entityInfo.entityName is missing for %s', modelName);
+        return null;
+      }
+      if (!schema) {
+        logger.warn('_entityInfo.schema property is missing for %s', modelName);
+        return null;
+      }
+
+      const pascalEntity = model._pascalName || pascalCase(entityName);
       const pascalAction = pascalCase(action);
 
       const routeId = `${action}:${schema}.${entityName}`;
@@ -416,6 +434,17 @@ module.exports = ( ctx ) => {
         uri,
         methods,
       } = routeInfo;
+
+      if (!uri || !methods || !methods.length) {
+        logger.warn('No web route for route id %s', routeId);
+        logger.warn([
+          'This is either because the route id is incorrect',
+          'or because the route wasn\'t registered with',
+          'onRedux(\'webRoute\', cb) in a service. Defining',
+          'a %s table with the %s schema should register the route id for you.',
+        ].join(' '), entityName, schema);
+        return null;
+      }
 
       // middlewares for rendering form and for submitting form
       const renderStack = redux(
