@@ -129,17 +129,25 @@ module.exports = async ( ctx ) => {
    * Saves setting in the current process and writes to database.
    * Right now, there is no mechanism for the application to reload
    * but it is on the roadmap.
-   */
+   *
+   * paths should be of form: moduleName.settingName.rest.of.path
+   * where the rest.of.path is a valid JSONpath to update the setting
+   * if it is an object or array. First two parts are required to be
+   * the moduleName and top-level setting name.
+   * TODO: this needs to be completely gutted and faithfully implemented
+   *       for a later release. This is mostly faulty, bum code.
   const saveSetting = async (path, value) => {
     const parts = path.split('.');
-    const fst = peak(parts);
-    const snd = parts[1];
+    const moudleName = peak(parts);
+    const settingName = peak(parts, 1);
+    const rest = parts.slice(2);
     const lst = parts.pop();
     const settings = redux('setting', {});
-    const escapedPath = escapePath(path)
+    const escapedPath = escapePath(parts.join('.'))
     const parent = JSONPath({path: escapedPath, json: settings  });
     // get a pointer to the send to last thing
     parent[lst] = value;
+    // update in the database
     try {
       await dbService('setting')
         .withSchema('mazeltov')
@@ -148,13 +156,14 @@ module.exports = async ( ctx ) => {
           name: snd,
         })
         .update({
-          value: JSON.stringify(snd),
+          value: JSON.stringify(value),
         });
     } catch (error) {
       logger.error('%o', error);
       logger.error('Could not save setting %s = %s', parts.join('.'), value);
     };
   };
+   */
 
   // the module name of a setting may include @, so we quote it
   const escapePath = (path) => `\`${path}`;
@@ -281,7 +290,6 @@ module.exports = async ( ctx ) => {
   return {
     getSettings,
     getSetting,
-    saveSetting
   };
 
 };

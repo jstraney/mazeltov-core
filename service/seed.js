@@ -111,6 +111,9 @@ module.exports = ( ctx ) => {
       }
 
       for (const file of seederFiles) {
+        if (!/\.js$/.test(file)) {
+          continue;
+        }
         const fullPath = path.join(seedEnvDir, file);
         const seeder = require(fullPath);
         try {

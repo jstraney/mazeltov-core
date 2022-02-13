@@ -58,6 +58,11 @@ module.exports = ( ctx ) => {
           app.use('/', webControllers.flat().map(toRouters));
         }
 
+        // error handlers and 404 handlers must be used after other routers
+        const errHandlerPath = path.join(appRoot, 'controller/http/_error')
+        const errHandlers = await (require(errHandlerPath)(ctx));
+        app.use(errHandlers);
+
         let server;
 
         if (appProto === 'https') {

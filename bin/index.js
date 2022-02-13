@@ -106,6 +106,7 @@ const path = require('path');
       'cli',
       'project',
       'migration',
+      'setting',
       'module',
       'seed',
       'view',

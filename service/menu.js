@@ -26,19 +26,20 @@ module.exports = ( ctx = {} ) => {
 
   const {
     services: {
-      hookService,
-      modelService,
+      hookService: {
+        onRedux,
+        redux,
+      },
       routeService: {
-        buildRouteId,
         route,
       },
     },
   } = ctx;
 
-  hookService.onRedux('menu', (menus = {}) => menus);
+  onRedux('menu', (menus = {}) => menus);
 
   const registerMenus = (nextMenus = {}) => {
-    hookService.onRedux('menu', (menus) => {
+    onRedux('menu', (menus) => {
       return mergeDeep(menus, nextMenus);
     });
   };
@@ -51,7 +52,7 @@ module.exports = ( ctx = {} ) => {
    */
   const buildBreadCrumbMenu = (routeId, passedMenu = null) => {
     const menu = passedMenu === null
-      ? hookService.redux('menu', {})
+      ? redux('menu', {})
       : passedMenu;
 
     if (passedMenu !== null && !menu.items) {
@@ -215,7 +216,7 @@ module.exports = ( ctx = {} ) => {
    * to an item.
    */
   const getMenu = (path, orderedItems, opts = {}) => {
-    const menus = hookService.redux('menu')
+    const menus = redux('menu')
     const [fstKey, ...restKeys] = path.split('|');
     if (!fstKey || !menus[fstKey]) {
       return [];
@@ -246,11 +247,13 @@ module.exports = ( ctx = {} ) => {
   MENU_ITEMS_REST = Symbol('MENU_ITEMS_REST'),
   MENU_DEPTH_FULL = Symbol('MENU_DEPTH_FULL');
 
-  hookService.onHook('webGlobalLocals', (locals) => {
-    locals.menu = getMenu;
-    locals.menu.MENU_ITEMS_REST = MENU_ITEMS_REST;
-    locals.menu.MENU_DEPTH_FULL = MENU_DEPTH_FULL;
-  });
+  getMenu.MENU_ITEMS_REST = MENU_ITEMS_REST;
+  getMenu.MENU_DEPTH_FULL = MENU_DEPTH_FULL;
+
+  onRedux('webGlobalLocals', (locals) => ({
+    ...locals,
+    menu: getMenu,
+  }));
 
   return {
     registerMenus,

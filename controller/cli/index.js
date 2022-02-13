@@ -3,6 +3,7 @@ module.exports = (ctx, cliLoader) => cliLoader(ctx, [
   'project',
   'migration',
   'module',
+  'setting',
   'seed',
   'view',
   'server',

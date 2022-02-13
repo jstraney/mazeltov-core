@@ -39,9 +39,11 @@ module.exports = ( ctx = {} ) => {
     const migrationDirPath = path.join(modulePath, `/migrate`);
     const migrations = await fs.readdir(migrationDirPath);
 
-    return migrations.sort().map((name) => {
-      return [name, require(path.join(migrationDirPath, name))];
-    });
+    return migrations.sort()
+      .filter((name) => /\.js$/.test(name))
+      .map((name) => {
+        return [name, require(path.join(migrationDirPath, name))];
+      })
 
   }
 

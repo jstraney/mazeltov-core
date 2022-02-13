@@ -15,7 +15,7 @@ module.exports = ( ctx = {} ) => {
         'Run migrations for a specific Mazeltov module',
       ].join(' '),
       options: [
-        { name: 'moduleName', type: String, defaultOption: true },
+        { name: 'moduleName', type: String, defaultOption: true, defaultValue: 'app' },
         { name: 'steps', type: Number, defaultOption: null },
       ],
     },
@@ -25,7 +25,7 @@ module.exports = ( ctx = {} ) => {
         'Rollback last batch of migrations that had been run',
       ].join(' '),
       options: [
-        { name: 'moduleName', type: String, defaultOption: true },
+        { name: 'moduleName', type: String, defaultOption: true, defaultValue: 'app' },
         { name: 'steps', type: Number, defaultOption: null },
       ],
     },
@@ -36,7 +36,7 @@ module.exports = ( ctx = {} ) => {
         'yet to be run. Shortcut for `migration run --steps 1`',
       ].join(' '),
       options: [
-        { name: 'moduleName', type: String, defaultOption: true },
+        { name: 'moduleName', type: String, defaultOption: true, defaultValue: 'app' },
       ],
     },
     'migration down': {
@@ -46,7 +46,7 @@ module.exports = ( ctx = {} ) => {
         'been run. Shortcut for `migration rollback --steps 1`',
       ].join(' '),
       options: [
-        { name: 'moduleName', type: String, defaultOption: true },
+        { name: 'moduleName', type: String, defaultOption: true, defaultValue: 'app' },
       ],
     },
     'migration make': {
