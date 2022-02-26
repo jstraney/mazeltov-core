@@ -62,7 +62,7 @@ window.owo = (($) => {
       query: defaultQuery = {},
     } = defaultOptions;
 
-    return (options = {}) => {
+    return async (options = {}) => {
 
       const query = {
         ...defaultQuery,
@@ -99,7 +99,7 @@ window.owo = (($) => {
       };
 
       if (url !== '/api/token/refresh' && tokenExpired()) {
-        refreshToken();
+        await refreshToken();
       }
 
       nextOptions.headers = {
