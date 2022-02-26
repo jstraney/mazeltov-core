@@ -56,6 +56,23 @@ window.owo = (($) => {
     return `${url}?${query}&page=${currentPage}&limit=${currentLimit}`;
   };
 
+  const localStorageGetter = (key, json = true) => {
+    return () => {
+      return JSON.parse(window.localStorage.getItem(key));
+    };
+  };
+
+  const localStorageSetter = (key) => {
+    return (val) => {
+      return window.localStorage.setItem(key, JSON.stringify(val));
+    };
+  };
+
+  const getTokenInfo = localStorageGetter('token_info');
+  const setTokenInfo = localStorageSetter('token_info');
+
+  let tokenInfo = getTokenInfo();
+
   const createApiEndpoint = (baseUrl, method = 'get', defaultOptions = {}) => {
 
     const {
@@ -111,23 +128,6 @@ window.owo = (($) => {
   }
 
   const getApi = () => redux('webApi', {}, createApiEndpoint);
-
-  const localStorageGetter = (key, json = true) => {
-    return () => {
-      return JSON.parse(window.localStorage.getItem(key));
-    };
-  };
-
-  const localStorageSetter = (key) => {
-    return (val) => {
-      return window.localStorage.setItem(key, JSON.stringify(val));
-    };
-  };
-
-  const getTokenInfo = localStorageGetter('token_info');
-  const setTokenInfo = localStorageSetter('token_info');
-
-  let tokenInfo = getTokenInfo();
 
   // Here is a circular dependency for the @mazeltov/access modules
   // client side API. Not positive the best way to resolve this,
