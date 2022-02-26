@@ -117,6 +117,10 @@ window.owo = (($) => {
 
       if (url !== '/api/token/refresh' && tokenExpired()) {
         await refreshToken();
+        // refresh sends the JWT in the cookie which returns the
+        // new JWT to send in authorization header
+      } else if (url === '/api/token/refresh') {
+        return $.ajax(nextOptions);
       }
 
       nextOptions.headers = {
@@ -138,8 +142,9 @@ window.owo = (($) => {
 
     tokenInfo = await api.tokenGrant.refresh()
       .catch((error) => {
-        console.error('could not refresh token');
-        // TODO: redirect to login as AJAX will be broken without working token.
+        console.error('could not refresh token %o', error);
+        hook('webApiAuthFail');
+        return null;
       });
 
     // set for later use
