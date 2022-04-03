@@ -11,11 +11,15 @@ const {
 const {
   collection: {
     arrayIntersect,
-    arrayDiff,
+    arrayMutualDiff,
+    lookupObjectsMap,
   },
 } = require('../lib/util');
 
 const prompt = require('prompt');
+
+const cliUsage = require('command-line-usage');
+const chalk = require('chalk');
 
 module.exports = ( ctx = {} ) => {
 
@@ -178,7 +182,7 @@ module.exports = ( ctx = {} ) => {
           .merge();
         logger.info('%s:%s migrated up (pending completion)', moduleName, name);
       } catch (error) {
-        logger.error('Error from migration: %o', error);
+        logger.error('%o', error);
         logger.error('Migration %s:%s failed. Rolling back migrations.', moduleName, name);
         await trx.rollback();
         migrationRun.failedAt = name;
@@ -227,10 +231,13 @@ module.exports = ( ctx = {} ) => {
 
     const migrationNames = allModuleMigrations.map(({name}) => name);
 
+    // map of migration name to order it should run, indexed from zero
     const order = allModuleMigrations.reduce((lookup, row, i) => ({
       ...lookup,
       [row.name]: i,
     }), {});
+
+    const migrationLookup = lookupObjectsMap(allModuleMigrations, 'name');
 
     // if a run to rollback a set of migrations
     // was successful, we want to actually rollback
@@ -243,8 +250,10 @@ module.exports = ( ctx = {} ) => {
       })
       .orderBy('createdAt', 'desc');
 
+    // slice of migration names to rollback
     let lastDown = [];
 
+    // find which migrations exactly need to be rolledback
     for (const row of runs) {
       if (row.direction === 'down' && row.status === 'completed') {
         const {startedAt, completedAt} = row;
@@ -258,11 +267,18 @@ module.exports = ( ctx = {} ) => {
         const i = order[startedAt];
         const j = order[completedAt];
         const lastUp = migrationNames.slice(i, j + 1);
-        const diff = arrayDiff(lastUp, lastDown)
+        let diff = arrayMutualDiff(lastUp, lastDown)
+        // go through and remove anything in a state of "down"
+        diff = diff.filter((name) => {
+          return migrationLookup[name]
+            && migrationLookup[name].status === 'up';
+        });
         if (diff.length) {
           const fst = diff[0];
           const lst = diff.pop();
           lastRun = {
+            id: row.id,
+            status: row.status,
             completedAt: lst,
             startedAt: fst,
           };
@@ -282,6 +298,8 @@ module.exports = ( ctx = {} ) => {
       failedAt,
     } = lastRun;
 
+    logger.debug('Last migration run: id=%s  %s %s -> %s', lastRun.id, lastRun.status, startedAt, completedAt || failedAt);
+
     const baseDir = process.cwd();
     const migrationFiles = (await getMigrationFiles(baseDir, moduleName)).reverse();
 
@@ -300,6 +318,7 @@ module.exports = ( ctx = {} ) => {
       const inRollback = toBeRolledBack.length > 0;
       const notRun = ['notRun', 'down'].includes(record.status);
       const hasRun = record.status === 'up';
+      logger.debug('%s %s %s', name, record.status, inRollback);
       if (name !== record.name) {
         logger.error([
           'Migration record for %s:%s found, but doesnt match',
@@ -372,6 +391,7 @@ module.exports = ( ctx = {} ) => {
           });
         logger.info('%s:%s migrated down (pending completion)', moduleName, name);
       } catch (error) {
+        logger.error('%o', error);
         logger.error('Could not rollback %s:%s. undoing rollback.', moduleName, name);
         await trx.rollback();
         migrationRun.failedAt = name;
@@ -392,6 +412,23 @@ module.exports = ( ctx = {} ) => {
       .insert(migrationRun);
 
     await trx.commit();
+
+  };
+
+  /*
+   * TODO: implement
+   */
+  const refreshAll = async ( args ) => {
+
+    // bootstrap migration tables if they don't exist
+
+    // grab each user schema (non system)
+
+    // for each schema drop it with cascade
+
+    // empty the migration tables
+
+    // do a migration run
 
   };
 
@@ -524,12 +561,51 @@ module.exports = ( ctx = {} ) => {
     });
   };
 
+  const getStatuses = async (args) => {
+
+    const {
+      moduleName = null,
+    } = args;
+
+    const statusQuery = db('migration')
+        .withSchema('mazeltov')
+        .orderBy('moduleName', 'asc')
+        .orderBy('createdAt', 'asc');
+
+    const statuses = moduleName === null
+      ? await statusQuery
+      : await statusQuery.where({ moduleName })
+
+    return cliUsage([
+      {
+        header: 'Migration Statuses',
+        content: [
+          {
+            moduleName: '{green Module}',
+            name: '{green Migration Name}',
+            status: '{green Status}',
+          },
+        ].concat(statuses.map((record) => {
+          return {
+            moduleName: record.moduleName,
+            name: record.name,
+            status: record.status === 'up'
+              ? `{green ${record.status}}`
+              : `{red ${record.status}}`,
+          };
+        })),
+      }
+    ]);
+
+  };
+
   return {
     make,
     run,
     rollback,
     up,
     down,
+    getStatuses,
   };
 
 }

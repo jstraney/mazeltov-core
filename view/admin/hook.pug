@@ -1,0 +1,139 @@
+extends /layout/page
+
+block content
+
+  +form('Manage Hooks').ui-frame
+
+    +menu('hook').primary
+
+    div.row.spaced
+
+      fieldset.col.half
+
+        legend Route Types
+
+        div.row.spaced
+
+          label.col.third.hoverable
+            +input(
+              id='typesHook'
+              name=`types[]`
+              value='hook'
+              type='checkbox'
+              checked=args.types && args.types.includes('hook')
+            )
+            span Hooks
+
+          label.col.third.hoverable
+            +input(
+              id='typesReducer'
+              name=`types[]`
+              value='reducer'
+              type='checkbox'
+              checked=args.types && args.types.includes('reducer')
+            )
+            span Reducers
+
+    div.actions
+
+      input(
+        type='submit'
+        value='Search'
+      )
+
+      a.button(
+        href=request.uri
+      ) Clear
+
+    p.form-prompt.
+      Right now the <strong>Manage Hooks</strong> page is a
+      reporting tool to simply viewing which programatic hooks are available in code
+      in addition to troubleshooting the results they provide.
+
+    p.form-prompt.
+      These actions are currently not supported through UI by core Mazeltov
+
+    ul
+      li Modifying hooks at run-time, including enabling/disabling or adding callbacks
+      li Changing hook callbacks requires code changes and reloading your service.
+
+    -const hooks = result.hooks || {}
+    -const reducers = result.reducers || {}
+    if !args.types || args.types.length === 0 || args.types.includes('hook')
+      h2 Hooks
+      details
+        summary More Information
+        p.
+          A <strong>hook</strong> is triggered via <strong>hookService.hook</strong>
+          and runs callbacks that are registered as
+          <strong>implementations</strong> via <strong>hookService.onHook</strong>.
+          Return values from implementations are ignored. The main reason for using a hook
+          over a reducer is that hooks perform side-effects like sending messages or closing
+          remote connections.
+      div.table-wrapper
+        table.banded
+          thead
+            tr
+              th Hook Name
+              th Implementations
+          tbody
+            each hookName of Object.keys(hooks).sort()
+              - const callbacks = hooks[hookName]
+              tr
+                td=hookName
+                td
+                  details
+                    summary Callbacks (#{callbacks.length})
+                    table
+                      thead
+                        tr
+                          th name
+                          th code
+                      tbody
+                        each cb of callbacks
+                          tr
+                            td=(cb.name || 'anonymous')
+                            td
+                              pre
+                                code=cb.toString()
+
+    if !args.types || args.types.length === 0 || args.types.includes('reducer')
+      h2 Reducers
+      details
+        summary More Information
+        p.
+          A <strong>reducer (redux)</strong> is triggered via <strong>hookService.redux</strong>
+          and runs callbacks that are registered as
+          <strong>implementations</strong> via <strong>hookService.onRedux</strong>.
+          Reducers <strong>must</strong> return a non-undefined value. Each reducer transforms
+          the first argument supplied to the callback by returning a new value. The results of
+          reducers are cached until a new callback is added so reducers must never rely on
+          values supplied by closure.
+      div.table-wrapper
+        table.banded
+          thead
+            tr
+              th Reducer Name
+              th Implementations
+          tbody
+            each hookName of Object.keys(reducers).sort()
+              - const callbacks = reducers[hookName]
+              tr
+                td=hookName
+                td
+                  details
+                    summary Callbacks (#{callbacks.length})
+                    table
+                      thead
+                        tr
+                          th name
+                          th code
+                      tbody
+                        each cb of callbacks
+                          tr
+                            td=(cb.name || 'anonymous')
+                            td
+                              pre
+                                code=cb.toString()
+
+

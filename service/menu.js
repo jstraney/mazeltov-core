@@ -82,6 +82,7 @@ module.exports = ( ctx = {} ) => {
             'manage:cache': ['Cache', ['can administrate system:cache']],
             'manage:route': ['Routes', ['can administrate system:route']],
             'manage:model': ['Model', ['can administrate system:model']],
+            'manage:hook': ['Hooks', ['can administrate system:hook']],
           }
         },
       },
@@ -104,6 +105,11 @@ module.exports = ( ctx = {} ) => {
       },
     },
     model: {
+      items: {
+        adminPage: ['Admin', ['can get adminPage']],
+      },
+    },
+    hook: {
       items: {
         adminPage: ['Admin', ['can get adminPage']],
       },

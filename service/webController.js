@@ -54,6 +54,7 @@ module.exports = ( ctx ) => {
       },
       settingService: {
         getSettings,
+        getSetting,
       },
     },
     models,
@@ -357,6 +358,7 @@ module.exports = ( ctx ) => {
     stack.set('redirect', redirect({
       resultFlashMessage,
       errorRedirectURL: 'back',
+      services,
       logger,
     }));
 
@@ -373,6 +375,8 @@ module.exports = ( ctx ) => {
     basedir: path.resolve(ctx.appRoot, 'view'),
     menu: getMenu,
     route: routeUri,
+    getSetting,
+    getSettings,
   }));
 
   const webControllerParams = controllerService.subtypeControllerParams;

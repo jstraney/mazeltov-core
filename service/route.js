@@ -183,7 +183,7 @@ module.exports = async ( ctx = {} ) => {
 
     switch (action) {
       case 'create':
-        return `/${entityName}/new`;
+        return `/${paramCase(entityName)}/new`;
       case 'list':
         return routeBasePlural;
       case 'get':
@@ -196,7 +196,7 @@ module.exports = async ( ctx = {} ) => {
       case 'bulkMerge':
       case 'bulkCreate':
       case 'bulkPut':
-        return `${defaultRoute}/${paramAction}`;
+        return `${routeBasePlural}/${paramAction}`;
       default:
         return `${defaultRoute}/${paramAction}`;
     }
@@ -272,6 +272,10 @@ module.exports = async ( ctx = {} ) => {
         uri: '/admin/routes',
         methods: ['get'],
       },
+      'manage:hook': {
+        uri: '/admin/hooks',
+        methods: ['get'],
+      },
       'manage:model': {
         uri: '/admin/models',
         methods: ['get'],
@@ -340,11 +344,27 @@ module.exports = async ( ctx = {} ) => {
     return hookService.redux(`${controller}Route`, {})[id] || {};
   };
 
-  const routeUri = (id, params, controller = 'web') => {
+  const routeUri = (id, params = null, controller = 'web') => {
     const uri = routeInfo(id, controller).uri
-    return uri
-      ? fmtPlaceholder(uri, params || {})
-      : null;
+    // allow returning URI with no placeholder replacement.
+    // e.g. /account/:id/edit instead of /account//edit
+    if (params === null) {
+      return uri
+        ? uri
+        : null;
+    }
+    if (!uri) {
+      logger.warn([
+        'No uri could be found for %s on %s controller.',
+        'Most likely, %s is mispelled or doesn\'t exist',
+        'as a route key for this controller'
+      ].join(' '),
+        id,
+        controller
+      );
+      return;
+    }
+    return fmtPlaceholder(uri, params || {})
   };
 
   const routeMethods = (id, controller = 'web') => {

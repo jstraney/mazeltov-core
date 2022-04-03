@@ -27,6 +27,11 @@ const path = require('path');
 const pugTemplateService = ( ctx = {} ) => {
 
   const {
+    services: {
+      hookService: {
+        redux,
+      }
+    },
     templateServiceConfig: {
       templateDir,
       pug,
@@ -53,7 +58,11 @@ const pugTemplateService = ( ctx = {} ) => {
           // we are using readSync because we do not want requests
           // to come in to render templates that have not loaded yet.
           const contents = fs.readFileSync(fullPath);
-          fn = pug.compile(contents, { filename: fullPath });
+          const globalLocals = redux('webGlobalLocals', {});
+          fn = pug.compile(contents, {
+            ...globalLocals,
+            filename: fullPath
+          });
           if (alias != relativePath) {
             templates[alias] = fn;
           } else {

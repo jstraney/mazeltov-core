@@ -32,6 +32,7 @@ module.exports = ( ctx ) => {
   const {
     aclService,
     cacheService,
+    hookService,
     modelService: {
       getModels,
     },
@@ -75,6 +76,23 @@ module.exports = ( ctx ) => {
       },
       viewTemplate, {
         template: 'admin/model',
+      },
+    ])
+    .get('manage:hook', [
+      _useCSRF,
+      useArgs, {
+        query: [
+          'types',
+        ],
+      },
+      consumeArgs, {
+        consumerMap: {
+          hooks: hookService.getHooks,
+          reducers: hookService.getReducers,
+        },
+      },
+      viewTemplate, {
+        template: 'admin/hook',
       },
     ])
     .get('manage:cache', [

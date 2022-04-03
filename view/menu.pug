@@ -17,23 +17,28 @@ mixin nav-links(links, inline=false)
           )=text
 
 mixin menu(items, itemsInOrder = null, opts = {})
-  - const { level = 'h3', inline = false, resource = null, resourceMap = null } = opts;
+  - const { level = 'h3', inline = false, resource = null, resourceMap = null, menuClasses = null} = opts;
   if util.type.isString(items)
     - items = menu(items, itemsInOrder, { resource, resourceMap });
-  //- pre=JSON.stringify(items, null, 2)
-  //- pre=JSON.stringify({ title: items.hasTitle, help: items.hasHelp, links: items.hasLinks, sub: items.hasSub})
-  div
-    if items.hasTitle
-      -const menuTitle = items.title
-      #{level}=menuTitle
-    if items.hasHelp
-      -const help = items.help
-      p=help
-    if items.hasLinks
-      -const links = items.links;
-      +nav-links(links, inline)&attributes(attributes)
-    //- TODO: implement
-    if items.hasSub
+  if items.hasSub
+    div&attributes(attributes)
+      if items.hasTitle
+        -const menuTitle = items.title
+        #{level}=menuTitle
+      if items.hasHelp
+        -const help = items.help
+        p=help
       -const sub = items.sub;
       each subMenu in sub
         +menu(subMenu, null, opts)
+  else
+    div(class=menuClasses)
+      if items.hasTitle
+        -const menuTitle = items.title
+        #{level}=menuTitle
+      if items.hasHelp
+        -const help = items.help
+        p=help
+      if items.hasLinks
+        -const links = items.links;
+        +nav-links(links, inline)&attributes(attributes)

@@ -9,6 +9,15 @@ module.exports = ( ctx = {} ) => {
   } = services;
 
   return {
+    'migration statuses': {
+      consumer: migrationService.getStatuses,
+      description: [
+        'List migration statuses',
+      ].join(' '),
+      options: [
+        { name: 'moduleName', type: String, defaultValue: null },
+      ],
+    },
     'migration run': {
       consumer: migrationService.run,
       description: [

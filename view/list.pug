@@ -85,17 +85,18 @@ mixin result-table(listResult, columns = [], ops = [])
             tr
               each tuple in columns
                 -const [ name, label = name, opts = {}] = tuple
-                -const { fmt = null, mixin = null, menu = null, emptyVal = '-'} = opts;
+                -const { fmt = null, mixin = null, menu = null, emptyVal = '-' } = opts;
+                -const { tdAttr = {} }  = opts;
                 if fmt !== null
-                  td=(row[name] !== undefined ? fmt(row[name]) : emptyVal)
+                  td&attributes(tdAttr)=(row[name] !== undefined ? fmt(row[name], row, index) : emptyVal)
                 else if mixin !== null
-                  td
+                  td&attributes(tdAttr)
                     +#{mixin}(row, index)
                 else if menu !== null
-                  td
+                  td&attributes(tdAttr)
                     +menu(menu, null, { resource: row, inline: true })
                 else
-                  td=(row[name] !== undefined ? row[name] : emptyVal)
+                  td&attributes(tdAttr)=(row[name] !== undefined ? row[name] : emptyVal)
               if ops.length
                 td.inline.actions
                   -navLinks = []

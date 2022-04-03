@@ -16,6 +16,20 @@ module.exports = ( ctx ) => {
     appRoot,
   } = ctx;
 
+  // The appRoot is identified by the fs root of the project so it is
+  // set here to be retrieved by getSettings and shouldn't be set
+  // manually in .env
+  process.env.APP_ROOT = appRoot;
+
+  // similarly, there shouldn't be a need to inject the app.url setting
+  // as it's derived from the proto, host, and port
+  // TODO: consider adding a relative path to spec. May require many
+  // more changes so currently is unsupported.
+  process.env.APP_URL = process.env.APP_URL ?? new URL('/', [
+    process.env.APP_PROTO, '://',
+    process.env.APP_HOSTNAME,
+  ].join('') + (['80','443'].includes(process.env.APP_PORT) ? '' : ':' + process.env.APP_PORT));
+
   const envFilePath = process.env.APP_ENV_PATH || appRoot;
 
   require('dotenv').config({ path: path.resolve(envFilePath, '.env')});

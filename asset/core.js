@@ -599,6 +599,43 @@ window.owo = (($) => {
 
   };
 
+  /*
+  // TODO: implement or decide to go a different route.
+  const badgeAutoComplete = ( config = {}) => {
+
+    const {
+      input,
+      onPrepareArgs,
+      onFetchList,
+      onSelectOption,
+      resultTimeout = 1200,
+      limit = 10,
+    } = config;
+
+    const $autocomplete = $('<input>')
+      .attr('type', 'text')
+      .val();
+
+    let timeout;
+
+    $autocomplete.on('keyup', function () {
+      window.clearTimeout(timeout);
+      timeout = window.setTimeout(async () => {
+        const args = onPrepareArgs(this.value);
+        const result = await onFetchList(args)
+      }, resultTimeout);
+    });
+
+    $input.attr('type', 'hidden');
+    $input.after($autocomplete);
+
+  };
+
+  // TODO: implement
+  const selectAutoComplete = () => {
+  };
+  */
+
   return {
     getApi,
     ajaxListForm,

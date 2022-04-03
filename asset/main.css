@@ -389,6 +389,7 @@ pre > code {
   display: block;
   background-color: #333;
   color: #fff;
+  white-space: break-spaces;
 }
 p > code {
   border: 1px solid #ddd;

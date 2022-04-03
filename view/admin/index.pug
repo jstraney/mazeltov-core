@@ -9,10 +9,8 @@ block content
     +menu('accountPrimary', [
       'get:account',
       'adminPage',
-    ], {
-      inline: true,
-    }).primary
+    ]).inline.primary
 
-    div.row.spaced
-
-      +menu('admin')
+    +menu('admin', null, {
+      menuClasses: 'col half'
+    }).inline
